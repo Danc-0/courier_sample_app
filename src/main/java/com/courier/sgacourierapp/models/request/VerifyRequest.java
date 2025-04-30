@@ -5,6 +5,6 @@ package com.courier.sgacourierapp.models.request;
 @lombok.AllArgsConstructor
 @lombok.Builder
 public class VerifyRequest {
-    final String personalID;
-    final String verificationCode;
+    private String personalID;
+    private String verificationCode;
 }

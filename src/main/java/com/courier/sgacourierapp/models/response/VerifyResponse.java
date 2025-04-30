@@ -4,8 +4,8 @@ package com.courier.sgacourierapp.models.response;
 @lombok.NoArgsConstructor(force = true)
 @lombok.AllArgsConstructor
 @lombok.Builder
-public class VerifyResponse {
-    final String responseCode;
-    final String responseMessage;
-    final Data data;
+public class VerifyResponse<T> {
+    private String responseCode;
+    private String responseMessage;
+    private T data;
 }
