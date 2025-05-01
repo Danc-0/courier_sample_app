@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "sga_invoices")
 public class InvoiceEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private int oderId;
     private String invoiceNumber;
     private String invoiceType;

@@ -6,20 +6,146 @@
     <title>Courier App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF3300;
+            --secondary-color: #041E42;
+            --font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: var(--font-family);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-family: var(--font-family);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: #e62e00 !important;
+            border-color: #e62e00 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 51, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+
+        .text-secondary {
+            color: var(--secondary-color) !important;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #eaeaea;
+        }
+
+        .form-label {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        h2, h4 {
+            font-family: var(--font-family);
+            font-weight: 600;
+        }
+
+        input.form-control {
+            font-family: var(--font-family);
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #ced4da;
+            transition: border-color 0.2s ease;
+        }
+
+        input.form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 51, 0, 0.25);
+        }
+
+        .btn-primary:disabled {
+            background-color: #ff8566;
+            border-color: #ff8566;
+        }
+
+        .form-check-label {
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
 <div class="container py-5">
     <div class="row">
-        <div class="col-lg-6 mx-auto rounded border p-4">
-            <h2 class="text-center mb-4">Login</h2>
+        <div class="col-lg-6 mx-auto form-container p-4">
+            <div class="logo-container">
+                <svg class="logo" viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="240" height="120" fill="#FFFFFF"/>
+                    <path d="M50,60 L80,30 L160,30 L190,60 L160,90 L80,90 Z" fill="#041E42"/>
+                    <path d="M70,60 L90,40 L150,40 L170,60 L150,80 L90,80 Z" fill="#FF3300"/>
+                    <text x="120" y="65" font-family="Montserrat, sans-serif" font-size="18" font-weight="bold"
+                          text-anchor="middle" fill="#FFFFFF">COURIER
+                    </text>
+                </svg>
+                <h4 class="text-secondary">Courier App</h4>
+            </div>
+
+            <h2 class="text-center mb-4 text-secondary">Login</h2>
             <hr>
-            <form th:action="@{/login}" method="post" th:object="${loginRequest}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div class="alert alert-danger" th:if="${param.error}">
+                Invalid username or password.
+            </div>
+
+            <div class="alert alert-success" th:if="${param.logout}">
+                You have been logged out.
+            </div>
+
+            <form
+                    method="post"
+                    th:action="@{/internal/login}"
+                    th:object="${loginRequest}">
+
+                <div>
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                </div>
 
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" id="username" th:field="*{personalID}" class="form-control" required>
-                    <p class="text-danger mt-1" th:if="${#fields.hasErrors('personalID')}" th:errors="*{personalID}"></p>
+                    <p class="text-danger mt-1" th:if="${#fields.hasErrors('personalID')}"
+                       th:errors="*{personalID}"></p>
                 </div>
 
                 <div class="mb-3">
@@ -28,16 +154,23 @@
                     <p class="text-danger mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
                 </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Login</button>
+                <div class="d-grid gap-2">
+                    <button type="submit" id="loginBtn" class="btn btn-primary py-2">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"
+                              id="loginSpinner"></span>
+                        <span id="loginBtnText">Login</span>
+                    </button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
+
+<script>
+</script>
+
 </body>
 </html>

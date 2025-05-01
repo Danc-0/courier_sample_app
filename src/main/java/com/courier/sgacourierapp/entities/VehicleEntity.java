@@ -13,10 +13,11 @@ import java.util.Date;
 @Entity
 @Table(name = "sga_internal_vehicle")
 public class VehicleEntity {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private long vehicleId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long vehicleId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userEntity;
     private String vehicleName;

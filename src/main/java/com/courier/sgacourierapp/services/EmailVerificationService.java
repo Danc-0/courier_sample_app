@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class EmailVerificationService {
@@ -39,11 +40,11 @@ public class EmailVerificationService {
                 .or(() -> authenticationRepository.findByPhoneNumber(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        verificationCodeRepository.deleteByUserEntity_IdNumber(userEntity.getIdNumber());
+        verificationCodeRepository.deleteByUserId(userEntity.getId());
 
         VerificationEntity verificationCode = VerificationEntity.builder()
                 .verificationCode(code)
-                .userEntity(userEntity)
+                .userId(userEntity.getId())
                 .expiryTime(LocalDateTime.now().plusMinutes(VERIFICATION_CODE_EXPIRY_TIME))
                 .build();
 
@@ -61,11 +62,14 @@ public class EmailVerificationService {
         return sb.toString();
     }
 
-    public boolean verifyCode(String email, String code) {
+    public boolean verifyCode(String username, String code) {
+        UserEntity userEntity = authenticationRepository.findByEmail(username)
+                .or(() -> authenticationRepository.findByIdNumber(username))
+                .or(() -> authenticationRepository.findByPhoneNumber(username))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
         Optional<VerificationEntity> verificationEntity = verificationCodeRepository
-                .findByUserEntity_Email(email)
-                .or(() -> verificationCodeRepository.findByUserEntity_IdNumber(email)
-                        .or(() -> verificationCodeRepository.findByUserEntity_PhoneNumber(email)));
+                .findByUserId(userEntity.getId());
 
         if (verificationEntity.isEmpty()) {
             return false;

@@ -19,11 +19,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "sga_internal_users")
-public class UserEntity implements UserDetails {
+public class UserEntity {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @Column(columnDefinition = "CHAR(36)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -67,44 +66,4 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_date")
     private Date updatedDate;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        if (email != null && !email.isEmpty()) {
-            return email;
-        } else if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            return phoneNumber;
-        } else {
-            return idNumber;
-        }
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
 }

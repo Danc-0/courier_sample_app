@@ -5,7 +5,10 @@ package com.courier.sgacourierapp.models.response;
 @lombok.AllArgsConstructor
 @lombok.Builder
 public class LoginResponse<T> {
-    String responseCode;
-    String responseMessage;
+    private String responseCode;
+    private String responseMessage;
+    private boolean error;
+    private String message;
+    private String redirectUrl;
     private T data;
 }

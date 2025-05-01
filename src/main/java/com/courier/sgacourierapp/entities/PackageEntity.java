@@ -13,8 +13,9 @@ import java.util.Date;
 @Entity
 @Table(name = "sga_package")
 public class PackageEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String orderId;
     private String orderType;
     private String name;

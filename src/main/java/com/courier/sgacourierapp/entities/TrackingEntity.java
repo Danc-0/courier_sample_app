@@ -13,8 +13,9 @@ import java.util.Date;
 @Entity
 @Table(name = "sga_package_tracking")
 public class TrackingEntity {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String orderId;
     private String trackingNumber;
     private String currentLocation;

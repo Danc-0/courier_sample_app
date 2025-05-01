@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -22,10 +23,9 @@ public class VerificationEntity {
     
     @Column(name = "verification_code", nullable = false)
     private String verificationCode;
-    
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity userEntity;
+
+    @Column(name = "user_id")
+    private Long userId;
     
     @Column(nullable = false)
     private LocalDateTime expiryTime;
