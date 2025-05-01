@@ -8,11 +8,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class EmailVerificationService {
@@ -32,6 +32,7 @@ public class EmailVerificationService {
 
     final static int VERIFICATION_CODE_EXPIRY_TIME = 15;
 
+    @Transactional  // Add this annotation here
     public void generateAndStoreVerificationCode(String username) {
         String code = generateRandomCode();
 
@@ -62,6 +63,7 @@ public class EmailVerificationService {
         return sb.toString();
     }
 
+    @Transactional
     public boolean verifyCode(String username, String code) {
         UserEntity userEntity = authenticationRepository.findByEmail(username)
                 .or(() -> authenticationRepository.findByIdNumber(username))

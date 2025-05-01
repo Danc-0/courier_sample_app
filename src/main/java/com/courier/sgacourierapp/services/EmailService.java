@@ -18,7 +18,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("Your Verification Code");
+        message.setSubject("Account Verification");
         message.setText("Your verification code is: " + verificationCode +
                 "\n\nPlease enter this code on the verification page to complete your login.");
 
