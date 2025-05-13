@@ -40,19 +40,18 @@ public class AuthController {
     }
 
     @GetMapping("/verify")
-    public String showVerificationForm(Model model) {
+    public String showVerificationForm(final Model model) {
         final VerifyRequest verifyRequest = new VerifyRequest();
         model.addAttribute("verificationRequest", verifyRequest);
         return "verification";
     }
 
     @PostMapping("/verify")
-    public String verifyUser(@Valid @ModelAttribute("verificationRequest") String code, Authentication authentication) {
+    public String verifyUser(@Valid @ModelAttribute("verificationRequest") VerifyRequest VerifyRequest, Authentication authentication) {
         String email = authentication.getName();
-        boolean isVerified = emailVerificationService.verifyCode(email, code);
-
+        boolean isVerified = emailVerificationService.verifyCode(email, VerifyRequest.getVerificationCode());
         if (isVerified) {
-            return "redirect:/dashboard";
+            return "redirect:/internal/dashboard";
         } else {
             return "redirect:/verification?error=true";
         }

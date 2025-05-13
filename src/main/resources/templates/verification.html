@@ -140,11 +140,16 @@
                     method="post"
                     role="form"
                     th:action="@{/internal/verify}"
-                    th:object="${verifyRequest}">
+                    th:object="${verificationRequest}">
+
+                <div>
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                </div>
 
                 <div class="mb-4">
                     <label for="verificationCode" class="form-label">Verification Code</label>
                     <input type="text" id="verificationCode" name="verificationCode"
+                           th:field="*{verificationCode}"
                            class="form-control verification-code" maxlength="6" required>
                 </div>
 
@@ -166,29 +171,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
-
-<script>
-    document.getElementById("verifyBtn").addEventListener("click", function() {
-        // Show loading spinner on button click
-        document.getElementById("verifySpinner").classList.remove("d-none");
-        document.getElementById("verifyBtnText").textContent = "Verifying...";
-        document.getElementById("verifyBtn").disabled = true;
-    });
-
-    // Format verification code input
-    const codeInput = document.getElementById("verificationCode");
-    codeInput.addEventListener("input", function(e) {
-        // Remove non-digit characters
-        this.value = this.value.replace(/[^0-9]/g, '');
-    });
-
-    // Handle resend code
-    document.getElementById("resendCode").addEventListener("click", function(e) {
-        e.preventDefault();
-        // Add your code to resend verification code
-        alert("A new verification code has been sent to your email.");
-    });
-</script>
 
 </body>
 </html>

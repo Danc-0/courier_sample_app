@@ -19,4 +19,14 @@ public class StringValidator {
             return "Unknown";
         }
     }
+
+    public static String sanitizePhoneNumber(String input) {
+        if (input.startsWith("0")) {
+            input = "254" + input.substring(1);
+        } else if (input.startsWith("+")) {
+            input = input.substring(1);
+        }
+        return input;
+    }
+
 }

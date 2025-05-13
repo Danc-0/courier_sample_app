@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: #ff3030;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .dashboard-card {
+            border-left: 5px solid #fd7e14;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+        <a class="navbar-brand" href="/">Courier App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="btn btn-outline" href="/internal/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 sidebar d-none d-md-block">
+            <div class="position-sticky">
+                <a href="/internal/orders">Orders</a>
+                <a href="/internal/tracking">Tracking</a>
+                <a href="/internal/billing">Billing</a>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse"
+                       data-bs-target="#adminSubMenu" aria-expanded="false" aria-controls="adminSubMenu"
+                       style="color: #fff; padding: 15px; display: block;">
+                        Admin Module
+                    </a>
+                    <div class="collapse" id="adminSubMenu">
+                        <a href="/internal/admin/customers" class="ps-4"
+                           style="color: #fff; padding: 10px 15px; display: block;">Customers</a>
+                        <a href="/internal/admin/users" class="ps-4"
+                           style="color: #fff; padding: 10px 15px; display: block;">Users</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse"
+                       data-bs-target="#settingsSubMenu" aria-expanded="false" aria-controls="settingsSubMenu"
+                       style="color: #fff; padding: 15px; display: block;">
+                        Setting
+                    </a>
+                    <div class="collapse" id="settingsSubMenu">
+                        <!--                        <a href="/internal/setting/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>-->
+                        <!--                        <a href="/internal/setting/profile" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Profile</a>-->
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-4 py-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Orders</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOrderModal">Add Order
+                </button>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card dashboard-card p-3 shadow-sm" onclick="showOrders('total')">
+                        <h5>Total Orders</h5>
+                        <p class="display-6" id="totalCount">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card p-3 shadow-sm" onclick="showOrders('ACTIVE')">
+                        <h5>Active Orders</h5>
+                        <p class="display-6" id="activeCount">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card p-3 shadow-sm" onclick="showOrders('PENDING')">
+                        <h5>Pending Orders</h5>
+                        <p class="display-6" id="pendingCount">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card p-3 shadow-sm" onclick="showOrders('COMPLETED')">
+                        <h5>Completed Orders</h5>
+                        <p class="display-6" id="completedCount">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card p-3 shadow-sm" onclick="showOrders('CANCELLED')">
+                        <h5>Cancelled Orders</h5>
+                        <p class="display-6" id="cancelledCount">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <div class="table-responsive mt-4" id="orderDetails" style="display: none;">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order Name</th>
+                        <th>Customer Phone</th>
+                        <th>Courier ID</th>
+                        <th>Order Type</th>
+                        <th>Order Category</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="orderTableBody"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="orderForm" method="post" th:action="@{/internal/addNewOrder}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addOrderModalLabel">Add Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="orderId" name="id">
+                    <div class="mb-3">
+                        <label for="orderName" class="form-label">Order Name</label>
+                        <input type="text" class="form-control" id="orderName" name="orderName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customerRequestId" class="form-label">Customer Email/Phone</label>
+                        <input type="text" class="form-control" id="customerRequestId" name="customerRequestId"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="courierId" class="form-label">Courier ID</label>
+                        <input type="text" class="form-control" id="courierId" name="courierId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="orderType" class="form-label">Order Type</label>
+                        <input type="text" class="form-control" id="orderType" name="orderType" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="orderCategory" class="form-label">Order Category</label>
+                        <input type="text" class="form-control" id="orderCategory" name="orderCategory" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="orderStatus" class="form-label">Status</label>
+                        <select class="form-select" id="orderStatus" name="orderStatus">
+                            <option value="ACTIVE">Active</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pickupAddress" class="form-label">Pickup Address</label>
+                        <input type="text" class="form-control" id="pickupAddress" name="pickupAddress" readonly>
+                        <input type="hidden" id="pickupLatitude" name="pickupLatitude">
+                        <input type="hidden" id="pickupLongitude" name="pickupLongitude">
+                        <div id="pickupMap" style="height: 300px; margin-top: 10px;"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dropoffAddress" class="form-label">Drop-off Address</label>
+                        <input type="text" class="form-control" id="dropoffAddress" name="dropoffAddress" readonly>
+                        <input type="hidden" id="dropoffLatitude" name="dropoffLatitude">
+                        <input type="hidden" id="dropoffLongitude" name="dropoffLongitude">
+                        <div id="dropoffMap" style="height: 300px; margin-top: 10px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function showOrders(category) {
+        const orderTableBody = document.getElementById('orderTableBody');
+        const orderDetails = document.getElementById('orderDetails');
+        orderTableBody.innerHTML = "";
+
+        let endpoint = '/internal/getAllOrders';
+        if (category !== 'total') {
+            endpoint = `/internal/getOrdersByStatus?orderStatus=${category}`;
+        }
+
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error('Failed to fetch orders');
+            const orders = await response.json();
+
+            orders.forEach((order, index) => {
+                const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${order.orderName}</td>
+            <td>${order.customer.phoneNumber}</td>
+            <td>${order.courierId}</td>
+            <td>${order.orderType}</td>
+            <td>${order.orderCategory}</td>
+            <td>${order.orderStatus}</td>
+            <td>${order.createdDate}</td>
+          </tr>
+        `;
+                orderTableBody.innerHTML += row;
+            });
+
+            orderDetails.style.display = "block";
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            orderDetails.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadOrderCounts();
+    });
+
+    async function loadOrderCounts() {
+        const statuses = ["active", "pending", "completed", "cancelled"];
+
+        try {
+            const allRes = await fetch("/internal/getAllOrders");
+            const allOrders = await allRes.json();
+            document.getElementById("totalCount").innerText = allOrders.length;
+
+            for (const status of statuses) {
+                const res = await fetch(`/internal/getOrdersByStatus?orderStatus=${status}`);
+                const orders = await res.json();
+                document.getElementById(`${status}Count`).innerText = orders.length;
+            }
+        } catch (err) {
+            console.error("Error loading counts:", err);
+        }
+    }
+</script>
+
+<script>
+    window.onload = function () {
+        setTimeout(function () {
+            const successAlert = document.querySelector(".alert-success");
+            const errorAlert = document.querySelector(".alert-danger");
+            if (successAlert) successAlert.style.display = "none";
+            if (errorAlert) errorAlert.style.display = "none";
+        }, 5000);
+    };
+</script>
+
+<script>
+    let pickupMap, dropoffMap;
+    let pickupMarker, dropoffMarker;
+    let geocoder;
+
+    function initMaps() {
+        geocoder = new google.maps.Geocoder();
+
+        const defaultLatLng = { lat: -1.2921, lng: 36.8219 };
+
+        pickupMap = new google.maps.Map(document.getElementById('pickupMap'), {
+            center: defaultLatLng,
+            zoom: 13
+        });
+        pickupMarker = new google.maps.Marker({
+            position: defaultLatLng,
+            map: pickupMap,
+            draggable: true
+        });
+        google.maps.event.addListener(pickupMarker, 'dragend', function () {
+            const position = pickupMarker.getPosition();
+            document.getElementById('pickupLatitude').value = position.lat();
+            document.getElementById('pickupLongitude').value = position.lng();
+            geocodePosition(position, 'pickupAddress');
+        });
+
+        dropoffMap = new google.maps.Map(document.getElementById('dropoffMap'), {
+            center: defaultLatLng,
+            zoom: 13
+        });
+        dropoffMarker = new google.maps.Marker({
+            position: defaultLatLng,
+            map: dropoffMap,
+            draggable: true
+        });
+        google.maps.event.addListener(dropoffMarker, 'dragend', function () {
+            const position = dropoffMarker.getPosition();
+            document.getElementById('dropoffLatitude').value = position.lat();
+            document.getElementById('dropoffLongitude').value = position.lng();
+            geocodePosition(position, 'dropoffAddress');
+        });
+    }
+
+    function geocodePosition(position, addressFieldId) {
+        geocoder.geocode({location: position}, function (results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    document.getElementById(addressFieldId).value = results[0].formatted_address;
+                } else {
+                    document.getElementById(addressFieldId).value = 'No address found';
+                }
+            } else {
+                document.getElementById(addressFieldId).value = 'Geocoder failed: ' + status;
+            }
+        });
+    }
+</script>
+
+<!--<script>-->
+<!--    let pickupMap, dropoffMap;-->
+<!--    let pickupMarker, dropoffMarker;-->
+<!--    let geocoder;-->
+
+<!--    function initMaps(callback) {-->
+<!--        geocoder = new google.maps.Geocoder();-->
+<!--        if (navigator.geolocation) {-->
+<!--            navigator.geolocation.getCurrentPosition(-->
+<!--                (position) => {-->
+<!--                    const userLatLng = {-->
+<!--                        lat: position.coords.latitude,-->
+<!--                        lng: position.coords.longitude-->
+<!--                    };-->
+<!--                    initializeMaps(userLatLng);-->
+<!--                },-->
+<!--                (error) => {-->
+<!--                    console.warn("Geolocation failed or was denied. Using fallback location.");-->
+<!--                    const fallbackLatLng = {lat: 0.3476, lng: 32.5825};-->
+<!--                    initializeMaps(fallbackLatLng);-->
+<!--                }-->
+<!--            );-->
+<!--        } else {-->
+<!--            console.warn("Geolocation not supported by browser. Using fallback location.");-->
+<!--            const fallbackLatLng = {lat: 0.3476, lng: 32.5825};-->
+<!--            initializeMaps(fallbackLatLng);-->
+<!--        }-->
+<!--    }-->
+
+<!--    pickupMap = new google.maps.Map(document.getElementById('pickupMap'), {-->
+<!--        center: defaultLatLng,-->
+<!--        zoom: 13-->
+<!--    });-->
+
+<!--    pickupMarker = new google.maps.Marker({-->
+<!--        position: defaultLatLng,-->
+<!--        map: pickupMap,-->
+<!--        draggable: true-->
+<!--    });-->
+
+<!--    pickupMarker.addListener('dragend', () => {-->
+<!--        const position = pickupMarker.getPosition();-->
+<!--        updateLocationFields(position, 'pickup');-->
+<!--    });-->
+
+<!--    pickupMap.addListener('click', (event) => {-->
+<!--        const position = event.latLng;-->
+<!--        pickupMarker.setPosition(position);-->
+<!--        updateLocationFields(position, 'pickup');-->
+<!--    });-->
+
+<!--    dropoffMap = new google.maps.Map(document.getElementById('dropoffMap'), {-->
+<!--        center: defaultLatLng,-->
+<!--        zoom: 13-->
+<!--    });-->
+
+<!--    dropoffMarker = new google.maps.Marker({-->
+<!--        position: defaultLatLng,-->
+<!--        map: dropoffMap,-->
+<!--        draggable: true-->
+<!--    });-->
+
+<!--    dropoffMarker.addListener('dragend', () => {-->
+<!--        const position = dropoffMarker.getPosition();-->
+<!--        updateLocationFields(position, 'dropoff');-->
+<!--    });-->
+
+<!--    dropoffMap.addListener('click', (event) => {-->
+<!--        const position = event.latLng;-->
+<!--        dropoffMarker.setPosition(position);-->
+<!--        updateLocationFields(position, 'dropoff');-->
+<!--    });-->
+
+<!--    function updateLocationFields(position, type) {-->
+<!--        const lat = position.lat();-->
+<!--        const lng = position.lng();-->
+<!--        document.getElementById(`${type}Latitude`).value = lat;-->
+<!--        document.getElementById(`${type}Longitude`).value = lng;-->
+<!--        geocodePosition(position, `${type}Address`);-->
+<!--    }-->
+
+<!--</script>-->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADwHrsnRYiB37pHoP5vm0GBfPSIMeaqpk&callback=initMaps"
+        async defer></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

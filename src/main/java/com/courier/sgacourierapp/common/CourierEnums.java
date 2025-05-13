@@ -1,5 +1,7 @@
 package com.courier.sgacourierapp.common;
 
+import lombok.Getter;
+
 public class CourierEnums {
 
     public enum Gender {
@@ -8,18 +10,26 @@ public class CourierEnums {
         OTHER
     }
 
-    public enum UserRole {
+    public enum UserRoles {
         ADMIN,
-        CUSTOMER,
-        FINANCIAL,
-        PACKAGE_HANDLER
+        DISPATCHER,
+        MANAGER,
+        BILLING_STAFF,
+        SUPER_USER
     }
 
     public enum Status {
         ACTIVE,
         INACTIVE,
         PENDING,
-        DEACTIVATED
+        SUSPENDED;
+    }
+
+    public enum OrderStatus {
+        ACTIVE,
+        COMPLETED,
+        PENDING,
+        CANCELLED
     }
 
     public enum TrackingStatus {
@@ -32,6 +42,7 @@ public class CourierEnums {
         NON_PERISHABLE,
     }
 
+    @Getter
     public enum CountryCode {
         KENYA("KE"),
         TANZANIA("TZ"),
@@ -43,9 +54,6 @@ public class CourierEnums {
             this.countryCode = countryCode;
         }
 
-        public String getCountryCode() {
-            return countryCode;
-        }
     }
 
     public enum Verification {
@@ -57,4 +65,31 @@ public class CourierEnums {
         ACTIVATED,
         NOT_ACTIVATED
     }
+
+    @Getter
+    public enum CustomerTypes {
+        INDIVIDUAL(0),
+        BUSINESS(1);
+
+        private final int customerType;
+
+        CustomerTypes(int customerType) {
+            this.customerType = customerType;
+        }
+
+    }
+
+    @Getter
+    public enum PaymentTerms {
+        PREPAID(0),
+        POSTPAID(1),
+        INVOICE(2);
+
+        private final int paymentTerm;
+
+        PaymentTerms(int paymentTerm) {
+            this.paymentTerm = paymentTerm;
+        }
+    }
+
 }

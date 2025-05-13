@@ -1,31 +1,36 @@
 package com.courier.sgacourierapp.entities;
 
+import com.courier.sgacourierapp.common.CourierEnums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "sga_pattern_customer")
+@Table(name = "sga_customers")
 public class CustomerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String firstName;
-    private String lastName;
+
+    @Enumerated(EnumType.STRING)
+    private CourierEnums.CustomerTypes customerType;
+
+    @Enumerated(EnumType.STRING)
+    private CourierEnums.PaymentTerms paymentTerms;
+
+    @Enumerated(EnumType.STRING)
+    private CourierEnums.Status status;
+
     private String email;
-    private String phone;
-    private String idNumber;
+    private String phoneNumber;
     private String address;
-    private String city;
-    private String state;
-    private String country;
-    private String status;
-    private Date createdDate;
-    private Date updatedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
 }

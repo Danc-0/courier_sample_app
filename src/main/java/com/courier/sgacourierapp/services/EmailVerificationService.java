@@ -83,6 +83,7 @@ public class EmailVerificationService {
 
         if (isValid) {
             verificationCodeRepository.delete(verificationCode);
+            authenticationRepository.updateVerificationAndActivationToTrue(userEntity.getId());
         }
 
         return isValid;

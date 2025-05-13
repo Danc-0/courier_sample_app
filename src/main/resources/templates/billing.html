@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:width="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Billing - Courier App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: #ff3030;
+        }
+
+        .sidebar a {
+            color: #fff;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .card-summary {
+            border-left: 5px solid #0d6efd;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-summary.paid {
+            border-left-color: #198754;
+        }
+
+        .card-summary.unpaid {
+            border-left-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+        <a class="navbar-brand" href="/">Courier App</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="btn btn-outline" href="/internal/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 sidebar d-none d-md-block">
+            <div class="position-sticky">
+                <a href="/internal/orders">Orders</a>
+                <a href="/internal/tracking">Tracking</a>
+                <a href="/internal/billing" class="bg-secondary">Billing</a>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#adminSubMenu" aria-expanded="false" aria-controls="adminSubMenu" style="color: #fff; padding: 15px; display: block;">
+                        Admin Module
+                    </a>
+                    <div class="collapse" id="adminSubMenu">
+                        <a href="/internal/admin/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>
+                        <a href="/internal/admin/users" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Users</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#settingsSubMenu" aria-expanded="false" aria-controls="settingsSubMenu" style="color: #fff; padding: 15px; display: block;">
+                        Setting
+                    </a>
+                    <div class="collapse" id="settingsSubMenu">
+                        <!--                        <a href="/internal/setting/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>-->
+                        <!--                        <a href="/internal/setting/profile" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Profile</a>-->
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-4 py-4">
+            <h2 class="mb-4">Billing</h2>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card-summary paid">
+                        <h5>Paid Bills</h5>
+                        <p class="fs-3" th:text="'Ksh. ' + ${totalPaid}">Ksh. 0.00</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-summary unpaid">
+                        <h5>Unpaid Bills</h5>
+                        <p class="fs-3" th:text="'Ksh. ' + ${totalUnpaid}">Ksh. 0.00</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-summary">
+                        <h5>Total Revenue</h5>
+                        <p class="fs-3" th:text="'Ksh. ' + ${totalRevenue}">Ksh. 0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3 d-flex justify-content-between">
+                <div class="mb-3 d-flex justify-content-between" style="width: 415px;">
+                    <form method="get" action="/internal/getAllBillsByStatus" class="d-flex" style="width: 200px;">
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="" th:selected="${selectedStatus == null}">All Statuses</option>
+                            <option value="paid" th:selected="${selectedStatus == 'paid'}">Paid</option>
+                            <option value="pending" th:selected="${selectedStatus == 'pending'}">Unpaid</option>
+                            <option value="failed" th:selected="${selectedStatus == 'failed'}">Failed</option>
+                        </select>
+                    </form>
+                    <form style="width: 200px;">
+                        <select name="customer" class="form-select" onchange="this.form.submit()">
+                            <option value="" th:selected="${selectedCustomer == null}">All Customer</option>
+                            <option value="customer1" th:selected="${selectedCustomer}">Customer 1</option>
+                            <option value="customer2" th:selected="${selectedCustomer}">Customer 2</option>
+                            <option value="customer3" th:selected="${selectedCustomer}">Customer 3</option>
+                        </select>
+                    </form>
+                </div>
+                <div>
+                    <button class="btn btn-outline-secondary">Export CSV</button>
+                    <button class="btn btn-outline-secondary">Export PDF</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Payment Status</th>
+                        <th>Billing Date</th>
+                        <th>Payment Method</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="invoice, stat : ${invoices}">
+                        <td th:text="${stat.index + 1}">1</td>
+                        <td th:text="'#' + ${invoice.orderId}">#0000</td>
+                        <td th:text="${invoice.getCustomerId()}">Customer Id</td>
+                        <td th:text="'Ksh. ' + ${invoice.totalAmount}">Ksh. 0.00</td>
+                        <td>
+        <span th:classappend="${invoice.paymentStatus == 'Paid'} ? 'badge bg-success' : 'badge bg-danger'"
+              th:text="${invoice.paymentStatus}">Payment Status</span>
+                        </td>
+                        <td th:text="${invoice.getCreatedDate()}">YYYY-MM-DD</td>
+                        <td th:text="${invoice.paymentMethod}">Method</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="'/internal/editBill?id=' + ${invoice.id}">Edit</a>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

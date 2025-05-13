@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,12 +16,18 @@ public class InvoiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private int oderId;
+    private Long orderId;
+    private Long customerId;
     private String invoiceNumber;
     private String invoiceType;
-    private double amount;
     private String paymentMethod;
     private String paymentStatus;
-    private String createdDate;
-    private String updatedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
+    private LocalDateTime paymentDate;
+    private Double basePrice;
+    private Double taxAmount;
+    private Double discountAmount;
+    private Double totalAmount;
+    private String billingStatus;
 }

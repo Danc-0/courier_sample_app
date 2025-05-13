@@ -13,7 +13,7 @@
         }
         .sidebar {
             min-height: 100vh;
-            background-color: #343a40;
+            background-color: #ff3030;
         }
         .sidebar a {
             color: #fff;
@@ -22,7 +22,7 @@
             text-decoration: none;
         }
         .sidebar a:hover {
-            background-color: #495057;
+            background-color: #ff3030;
         }
         .dashboard-card {
             border-left: 5px solid #fd7e14;
@@ -52,11 +52,27 @@
     <div class="row">
         <nav class="col-md-2 sidebar d-none d-md-block">
             <div class="position-sticky">
-                <a href="/dashboard">Dashboard</a>
-                <a href="/shipments">Shipments</a>
-                <a href="/couriers">Couriers</a>
-                <a href="/users">Users</a>
-                <a href="/reports">Reports</a>
+                <a href="/internal/orders">Orders</a>
+                <a href="/internal/tracking">Tracking</a>
+                <a href="/internal/billing">Billing</a>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#adminSubMenu" aria-expanded="false" aria-controls="adminSubMenu" style="color: #fff; padding: 15px; display: block;">
+                        Admin Module
+                    </a>
+                    <div class="collapse" id="adminSubMenu">
+                        <a href="/internal/admin/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>
+                        <a href="/internal/admin/users" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Users</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#settingsSubMenu" aria-expanded="false" aria-controls="settingsSubMenu" style="color: #fff; padding: 15px; display: block;">
+                        Setting
+                    </a>
+                    <div class="collapse" id="settingsSubMenu">
+<!--                        <a href="/internal/setting/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>-->
+<!--                        <a href="/internal/setting/profile" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Profile</a>-->
+                    </div>
+                </div>
             </div>
         </nav>
 
@@ -65,19 +81,25 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="card dashboard-card p-3 shadow-sm">
-                        <h5>Total Shipments</h5>
+                        <h5>Total Orders</h5>
                         <p class="display-6">128</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card dashboard-card p-3 shadow-sm">
-                        <h5>Active Couriers</h5>
+                        <h5>Active Orders</h5>
                         <p class="display-6">34</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card dashboard-card p-3 shadow-sm">
-                        <h5>Pending Deliveries</h5>
+                        <h5>Pending Orders</h5>
+                        <p class="display-6">12</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card p-3 shadow-sm">
+                        <h5>Completed Orders</h5>
                         <p class="display-6">12</p>
                     </div>
                 </div>

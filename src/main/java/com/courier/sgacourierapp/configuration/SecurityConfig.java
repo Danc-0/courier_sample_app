@@ -28,7 +28,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/styles/*","/internal/login").permitAll()
+                        .requestMatchers("/",
+                                "/static/css/styles",
+                                "/internal/login",
+                                "internal/verify",
+                                "/internal/dashboard",
+                                "/internal/orders",
+                                "/internal/getAllOrders",
+                                "/internal/getOrdersByStatus",
+                                "/internal/getBillingTotalsPerStatus?status=paid",
+                                "/internal/getBillingTotalsPerStatus?status=failed",
+                                "/internal/getBillingTotalsPerStatus?status=pending",
+                                "/internal/addNewOrder",
+                                "/internal/billing",
+                                "internal/payments",
+                                "internal/setting/customers",
+                                "internal/admin/users",
+                                "internal/admin/users/new"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -28,7 +28,11 @@ public class AuthenticationService implements UserDetailsService {
         return User.builder()
                 .username(userEntity.getEmail())
                 .password(userEntity.getPassword())
-                .roles(userEntity.getRole())
+                .roles(userEntity.getRole().toString())
                 .build();
+    }
+
+    public UserEntity getAllAccountManagers() {
+        return null;
     }
 }

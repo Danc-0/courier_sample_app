@@ -1,5 +1,6 @@
 package com.courier.sgacourierapp.entities;
 
+import com.courier.sgacourierapp.common.CourierEnums;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -9,10 +10,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import static com.courier.sgacourierapp.common.CourierEnums.*;
 
 @Data
 @AllArgsConstructor
@@ -42,8 +46,9 @@ public class UserEntity {
     @Column(name = "password_hash")
     private String password;
 
-    @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRoles role;
 
     @Column(name = "gender")
     private String gender;
@@ -55,15 +60,15 @@ public class UserEntity {
     private String countryCode;
 
     @Column(name = "is_verified")
-    private String isVerified;
+    private int isVerified;
 
     @Column(name = "is_activated")
-    private String isActivated;
+    private int isActivated;
 
     @Column(name = "created_date")
-    private Date createdDate;
+    private LocalDateTime createdDate;
 
     @Column(name = "updated_date")
-    private Date updatedDate;
+    private LocalDateTime updatedDate;
 
 }
