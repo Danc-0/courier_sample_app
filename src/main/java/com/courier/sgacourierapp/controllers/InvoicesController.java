@@ -2,6 +2,7 @@ package com.courier.sgacourierapp.controllers;
 
 import com.courier.sgacourierapp.entities.InvoiceEntity;
 import com.courier.sgacourierapp.services.InvoiceService;
+import com.courier.sgacourierapp.services.OrdersService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class InvoicesController {
 
     @Autowired
     private InvoiceService invoiceService;
+
+    @Autowired
+    private OrdersService ordersService;
 
     @GetMapping("/billing")
     public String showBillingDashboard(Model model) {
@@ -60,6 +64,12 @@ public class InvoicesController {
 
     @PostMapping("/generateBillForOrder")
     public ResponseEntity<InvoiceEntity> generateBill(@RequestParam Long orderId) {
+        return ResponseEntity.ok().body(new InvoiceEntity());
+    }
+
+    @PostMapping("/createBillForOrder")
+    public ResponseEntity<InvoiceEntity> createBill(Long orderId) {
+
         return ResponseEntity.ok().body(new InvoiceEntity());
     }
 

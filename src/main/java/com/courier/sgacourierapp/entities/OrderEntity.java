@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static com.courier.sgacourierapp.common.CourierEnums.*;
 
@@ -59,17 +57,37 @@ public class OrderEntity {
     @Column(name = "dropoff_address")
     private String dropoffAddress;
 
+    @Column(name = "distance_km")
+    private String distanceKm;
+
+    @Column(name = "assigned_to")
+    private String assignedTo;
+
     @Column(name = "order_created_date")
     private LocalDateTime orderCreatedDate;
 
     @Column(name = "order_updated_date")
     private LocalDateTime orderUpdatedDate;
 
-    @Column(name = "order_type")
-    private String orderType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_type", nullable = false)
+    private OrderTypes orderType = OrderTypes.DEDICATED;
+
+    @Column(name = "weight")
+    private Long weight = 0L;
+
+    @Column(name = "volume")
+    private Long volume = 0L;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false)
+    private PaymentMethods paymentMethods = PaymentMethods.MOBILE_MONEY;
 
     @Column(name = "order_category")
     private String orderCategory;
+
+    @Column(name = "price")
+    private Long price;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;

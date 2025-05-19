@@ -65,22 +65,24 @@
                 <a href="/internal/tracking">Tracking</a>
                 <a href="/internal/billing" class="bg-secondary">Billing</a>
                 <div class="dropdown">
-                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#adminSubMenu" aria-expanded="false" aria-controls="adminSubMenu" style="color: #fff; padding: 15px; display: block;">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse"
+                       data-bs-target="#adminSubMenu" aria-expanded="false" aria-controls="adminSubMenu"
+                       style="color: #fff; padding: 15px; display: block;">
                         Admin Module
                     </a>
                     <div class="collapse" id="adminSubMenu">
-                        <a href="/internal/admin/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>
-                        <a href="/internal/admin/users" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Users</a>
+                        <a href="/internal/admin/customers" class="ps-4"
+                           style="color: #fff; padding: 10px 15px; display: block;">Customers</a>
+                        <a href="/internal/admin/users" class="ps-4"
+                           style="color: #fff; padding: 10px 15px; display: block;">Users</a>
                     </div>
                 </div>
                 <div class="dropdown">
-                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#settingsSubMenu" aria-expanded="false" aria-controls="settingsSubMenu" style="color: #fff; padding: 15px; display: block;">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="collapse"
+                       data-bs-target="#settingsSubMenu" aria-expanded="false" aria-controls="settingsSubMenu"
+                       style="color: #fff; padding: 15px; display: block;">
                         Setting
                     </a>
-                    <div class="collapse" id="settingsSubMenu">
-                        <!--                        <a href="/internal/setting/customers" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Customers</a>-->
-                        <!--                        <a href="/internal/setting/profile" class="ps-4" style="color: #fff; padding: 10px 15px; display: block;">Profile</a>-->
-                    </div>
                 </div>
             </div>
         </nav>
@@ -139,6 +141,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>#</th>
+                        <th>Invoice ID</th>
                         <th>Order ID</th>
                         <th>Customer</th>
                         <th>Amount</th>
@@ -151,7 +154,8 @@
                     <tbody>
                     <tr th:each="invoice, stat : ${invoices}">
                         <td th:text="${stat.index + 1}">1</td>
-                        <td th:text="'#' + ${invoice.orderId}">#0000</td>
+                        <td th:text="${invoice.invoiceNumber}">N/A</td>
+                        <td th:text="${invoice.orderId}">#0000</td>
                         <td th:text="${invoice.getCustomerId()}">Customer Id</td>
                         <td th:text="'Ksh. ' + ${invoice.totalAmount}">Ksh. 0.00</td>
                         <td>

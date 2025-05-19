@@ -3,16 +3,20 @@ package com.courier.sgacourierapp.services;
 import com.courier.sgacourierapp.common.CourierEnums;
 import com.courier.sgacourierapp.entities.CustomerEntity;
 import com.courier.sgacourierapp.entities.OrderEntity;
+import com.courier.sgacourierapp.events.OrderCreatedEvent;
 import com.courier.sgacourierapp.repository.CustomersRepository;
 import com.courier.sgacourierapp.repository.OrdersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.courier.sgacourierapp.common.CourierEnums.*;
 
@@ -25,8 +29,14 @@ public class OrdersService {
     @Autowired
     private CustomersRepository customersRepository;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     public List<OrderEntity> getAllOrders() {
-        return ordersRepository.findAll();
+        return ordersRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(OrderEntity::getCreatedDate).reversed())
+                .collect(Collectors.toList());
     }
 
     public void addNewOrder(final OrderEntity orderEntity) {
@@ -43,7 +53,9 @@ public class OrdersService {
             throw new EntityNotFoundException("Order with ID " + orderEntity.getCourierId() + " already exists.");
         }
         orderEntity.setCustomer(customerEntity);
-        ordersRepository.save(orderEntity);
+        orderEntity.setPrice(orderEntity.getPrice());
+        OrderEntity savedOrder = ordersRepository.save(orderEntity);
+        eventPublisher.publishEvent(new OrderCreatedEvent(this, savedOrder));
     }
 
     public List<OrderEntity> getAllOrdersByStatus(final String status) {
@@ -70,7 +82,6 @@ public class OrdersService {
 
         return ordersRepository.save(existingOrder);
     }
-
 
     public OrderEntity getOrderById(Long id) {
         return ordersRepository.findById(id).get();

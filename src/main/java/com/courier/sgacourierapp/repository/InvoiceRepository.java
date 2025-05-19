@@ -18,4 +18,7 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
     Double getTotalInvoiceAmountByStatus(@Param("status") String status);
 
     List<InvoiceEntity> findAllByPaymentStatus(String paymentStatus);
+
+    @Query("SELECT COUNT(i) FROM InvoiceEntity i WHERE FUNCTION('YEAR', i.createdDate) = :year")
+    Long countByYear(@Param("year") int year);
 }

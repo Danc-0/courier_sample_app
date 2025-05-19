@@ -92,4 +92,26 @@ public class CourierEnums {
         }
     }
 
+    public enum PaymentMethods {
+        BANK_TRANSFER,
+        MOBILE_MONEY,
+        CASH
+    }
+
+    public enum OrderTypes {
+        EXPRESS,
+        DEDICATED
+    }
+
+    public enum BillingPaymentStatuses {
+        PAID,
+        PENDING,
+        FAILED,
+    }
+
+    public enum BillingStatuses {
+        BILLED,
+        UNBILLED,
+    }
+
 }

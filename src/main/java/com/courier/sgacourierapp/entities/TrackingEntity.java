@@ -1,5 +1,6 @@
 package com.courier.sgacourierapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +15,12 @@ import java.util.Date;
 @Table(name = "sga_package_tracking")
 public class TrackingEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String orderId;
+
+    @Column(name = "order_id", nullable = false)
+    private Long orderId;
+
     private String trackingNumber;
     private String currentLocation;
     private String status;

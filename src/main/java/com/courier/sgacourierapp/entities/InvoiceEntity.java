@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "sga_invoices")
 public class InvoiceEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderId;
     private Long customerId;
