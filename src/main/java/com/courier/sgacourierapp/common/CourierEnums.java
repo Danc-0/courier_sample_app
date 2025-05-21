@@ -103,6 +103,12 @@ public class CourierEnums {
         DEDICATED
     }
 
+    public enum DispatchStatus {
+        ACTIVE,
+        ASSIGNED,
+        INACTIVE,
+    }
+
     public enum BillingPaymentStatuses {
         PAID,
         PENDING,

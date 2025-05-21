@@ -14,12 +14,11 @@ import java.util.Date;
 @Table(name = "sga_internal_vehicle")
 public class VehicleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long vehicleId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserEntity userEntity;
+    private Long userId;
     private String vehicleName;
     private String vehicleType;
     private String vehicleModel;

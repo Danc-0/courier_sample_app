@@ -149,6 +149,7 @@
                         <th>Order Category</th>
                         <th>Status</th>
                         <th>Created Date</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="orderTableBody"></tbody>
@@ -161,43 +162,61 @@
 <div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form id="orderForm" method="post" th:action="@{/internal/addNewOrder}">
+            <form id="orderForm" method="post"
+                  th:action="${formData.order.id == null} ? '/internal/addNewOrder' : '/internal/updateOrder'"
+                  th:object="${formData}">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addOrderModalLabel">Add Order</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="orderId" name="id">
+                    <input type="hidden" id="orderId" name="id" th:field="*{order.id}">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="orderName" class="form-label">Order Name</label>
-                                <input type="text" class="form-control" id="orderName" name="orderName" required>
+                                <input type="text" class="form-control" id="orderName" name="orderName"
+                                       th:field="*{order.orderName}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="customerRequestId" class="form-label">Customer Email/Phone</label>
                                 <input type="text" class="form-control" id="customerRequestId" name="customerRequestId"
-                                       required>
+                                       th:field="*{order.customerRequestId}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="courierId" class="form-label">Courier ID</label>
-                                <input type="text" class="form-control" id="courierId" name="courierId" required>
+                                <input type="text" class="form-control" id="courierId" name="courierId"
+                                       th:field="*{order.courierId}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="dispatcherId" class="form-label">Dispatcher</label>
+                                <select class="form-select" id="dispatcherId" name="dispatcher.id" th:field="*{dispatcher.id}">
+                                    <option value="">Select Dispatcher</option>
+                                    <option th:each="disp : ${dispatchers}"
+                                            th:value="${disp.id}"
+                                            th:text="${disp.firstName + ' ' + disp.lastName + ' (' + disp.dispatchStatus + ')'}"
+                                            th:selected="${disp.id == formData.order.assignedTo}">
+                                    </option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="orderCategory" class="form-label">Order Category</label>
                                 <input type="text" class="form-control" id="orderCategory" name="orderCategory"
-                                       required>
+                                       th:field="*{order.orderCategory}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="orderType" class="form-label">Order Type</label>
-                                <select class="form-select" id="orderType" name="orderType">
+                                <select class="form-select" id="orderType" name="orderType"
+                                        th:field="*{order.orderType}">
                                     <option value="DEDICATED" selected>DEDICATED</option>
                                     <option value="EXPRESS">EXPRESS</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="orderStatus" class="form-label">Status</label>
-                                <select class="form-select" id="orderStatus" name="orderStatus">
+                                <select class="form-select" id="orderStatus" name="orderStatus"
+                                        th:field="*{order.orderStatus}">
                                     <option value="PENDING" selected>Pending</option>
                                     <option value="ACTIVE">Active</option>
                                     <option value="COMPLETED">Completed</option>
@@ -208,15 +227,18 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="weight" class="form-label">Weight</label>
-                                <input type="text" class="form-control" id="weight" name="weight">
+                                <input type="text" class="form-control" id="weight" name="weight"
+                                       th:field="*{order.weight}">
                             </div>
                             <div class="mb-3">
                                 <label for="volume" class="form-label">Volume</label>
-                                <input type="text" class="form-control" id="volume" name="volume">
+                                <input type="text" class="form-control" id="volume" name="volume"
+                                       th:field="*{order.volume}">
                             </div>
                             <div class="mb-3">
                                 <label for="paymentMethods" class="form-label">Payment Method</label>
-                                <select class="form-select" id="paymentMethods" name="paymentMethods">
+                                <select class="form-select" id="paymentMethods" name="paymentMethods"
+                                        th:field="*{order.paymentMethods}">
                                     <option value="CASH" selected>CASH</option>
                                     <option value="BANK_TRANSFER">BANK TRANSFER</option>
                                     <option value="MOBILE_MONEY">MOBILE MONEY</option>
@@ -225,17 +247,22 @@
                             <div class="mb-3">
                                 <label class="form-label">Pickup Address</label>
                                 <input type="text" class="form-control" id="pickupAddress" name="pickupAddress" readonly
-                                       placeholder="Address auto-fills from map">
-                                <input type="hidden" id="pickupLatitude" name="pickupLatitude">
-                                <input type="hidden" id="pickupLongitude" name="pickupLongitude">
+                                       placeholder="Address auto-fills from map" th:field="*{order.pickupAddress}">
+                                <input type="hidden" id="pickupLatitude" name="pickupLatitude"
+                                       th:field="*{order.pickupLatitude}">
+                                <input type="hidden" id="pickupLongitude" name="pickupLongitude"
+                                       th:field="*{order.pickupLongitude}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Drop-off Address</label>
                                 <input type="text" class="form-control" id="dropoffAddress" name="dropoffAddress"
-                                       readonly placeholder="Address auto-fills from map">
-                                <input type="hidden" id="dropoffLatitude" name="dropoffLatitude">
-                                <input type="hidden" id="dropoffLongitude" name="dropoffLongitude">
-                                <input type="hidden" id="distanceKm" name="distanceKm">
+                                       readonly placeholder="Address auto-fills from map"
+                                       th:field="*{order.dropoffAddress}">
+                                <input type="hidden" id="dropoffLatitude" name="dropoffLatitude"
+                                       th:field="*{order.dropoffLatitude}">
+                                <input type="hidden" id="dropoffLongitude" name="dropoffLongitude"
+                                       th:field="*{order.dropoffLongitude}">
+                                <input type="hidden" id="distanceKm" name="distanceKm" th:field="*{order.distanceKm}">
                             </div>
                         </div>
                     </div>
@@ -278,7 +305,7 @@
             const orders = await response.json();
 
             if (orders.length === 0) {
-                orderTableBody.innerHTML = `<tr><td colspan="8" class="text-center">No orders found for this category.</td></tr>`;
+                orderTableBody.innerHTML = `<tr><td colspan="10" class="text-center">No orders found for this category.</td></tr>`;
             } else {
                 orders.forEach((order, index) => {
                     const createdDate = order.createdDate ? new Date(order.createdDate).toLocaleDateString() : 'N/A';
@@ -294,6 +321,27 @@
                         <td>${order.orderCategory || 'N/A'}</td>
                         <td><span class="badge bg-${getStatusBadge(order.orderStatus)}">${order.orderStatus || 'N/A'}</span></td>
                         <td>${createdDate}</td>
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="ellipsis-container">
+                                        <span class="ellipsis-icon">&#x22EE; </span>
+                                    </div>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="/internal/order/edit/${order.courierId}">Edit</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger"
+                                           href="/internal/order/delete/${order.courierId}"
+                                           onclick="return confirm('Are you sure you want to delete this order?');">
+                                            Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
                       </tr>
                     `;
                     orderTableBody.innerHTML += row;
@@ -302,7 +350,7 @@
             orderDetailsDiv.style.display = "block";
         } catch (error) {
             console.error('Error loading orders:', error);
-            orderTableBody.innerHTML = `<tr><td colspan="8" class="text-center">Error loading orders. ${error.message}</td></tr>`;
+            orderTableBody.innerHTML = `<tr><td colspan="10" class="text-center">Error loading orders. ${error.message}</td></tr>`;
             orderDetailsDiv.style.display = "block";
         }
     }
@@ -418,6 +466,24 @@
             routeMap.setCenter(defaultLatLng);
             updateRouteAndAddress();
         });
+
+        // If edit form is being shown, position markers according to stored coordinates
+        const pickupLat = document.getElementById('pickupLatitude').value;
+        const pickupLng = document.getElementById('pickupLongitude').value;
+        const dropoffLat = document.getElementById('dropoffLatitude').value;
+        const dropoffLng = document.getElementById('dropoffLongitude').value;
+
+        if (pickupLat && pickupLng) {
+            pickupMarker.setPosition({lat: parseFloat(pickupLat), lng: parseFloat(pickupLng)});
+        }
+
+        if (dropoffLat && dropoffLng) {
+            dropoffMarker.setPosition({lat: parseFloat(dropoffLat), lng: parseFloat(dropoffLng)});
+        }
+
+        if ((pickupLat && pickupLng) || (dropoffLat && dropoffLng)) {
+            updateRouteAndAddress();
+        }
     }
 
     function handleMarkerDrag() {
@@ -490,12 +556,18 @@
                     const distanceInKm = convertToKilometers(distanceText);
 
                     document.getElementById('distanceKm').value = distanceInKm;
-                    document.getElementById('distanceDisplay').value = distanceInKm + ' km';
                 }
             }
         });
     }
+</script>
 
+<script th:if="${showOrderModal}" th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('addOrderModal'));
+        document.getElementById('addOrderModalLabel').textContent = 'Edit Order';
+        modal.show();
+    });
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADwHrsnRYiB37pHoP5vm0GBfPSIMeaqpk&callback=initMap"

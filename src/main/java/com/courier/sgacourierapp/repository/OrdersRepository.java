@@ -17,4 +17,7 @@ public interface OrdersRepository extends JpaRepository<OrderEntity, Long> {
     OrderEntity findAllByCourierId(Long courierId);
 
     OrderEntity getOrderEntityById(Long id);
+
+    void deleteByCourierId(Long courierId);
+
 }

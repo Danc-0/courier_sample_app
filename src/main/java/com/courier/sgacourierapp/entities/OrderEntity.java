@@ -61,7 +61,7 @@ public class OrderEntity {
     private String distanceKm;
 
     @Column(name = "assigned_to")
-    private String assignedTo;
+    private Long assignedTo;
 
     @Column(name = "order_created_date")
     private LocalDateTime orderCreatedDate;
@@ -95,3 +95,4 @@ public class OrderEntity {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 }
+

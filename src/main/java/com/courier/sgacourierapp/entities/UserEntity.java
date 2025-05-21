@@ -71,4 +71,12 @@ public class UserEntity {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "dispatch_status", nullable = false)
+    private DispatchStatus dispatchStatus;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
 }

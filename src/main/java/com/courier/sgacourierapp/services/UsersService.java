@@ -1,5 +1,6 @@
 package com.courier.sgacourierapp.services;
 
+import com.courier.sgacourierapp.common.CourierEnums;
 import com.courier.sgacourierapp.entities.UserEntity;
 import com.courier.sgacourierapp.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,5 @@ public class UsersService {
             throw new RuntimeException(e);
         }
     }
-
 
 }
