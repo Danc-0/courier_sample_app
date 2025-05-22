@@ -16,4 +16,6 @@ public interface UsersRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAllByRoleAndStatus(CourierEnums.UserRoles role, String status);
 
     List<UserEntity> findAllByRoleAndDispatchStatus(CourierEnums.UserRoles role, CourierEnums.DispatchStatus dispatchStatus);
+
+    UserEntity getUserEntityById(Long id);
 }

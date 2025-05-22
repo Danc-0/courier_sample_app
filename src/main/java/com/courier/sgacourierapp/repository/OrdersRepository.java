@@ -2,6 +2,7 @@ package com.courier.sgacourierapp.repository;
 
 import com.courier.sgacourierapp.common.CourierEnums;
 import com.courier.sgacourierapp.entities.OrderEntity;
+import io.micrometer.common.KeyValues;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,9 @@ public interface OrdersRepository extends JpaRepository<OrderEntity, Long> {
 
     void deleteByCourierId(Long courierId);
 
+    List<OrderEntity> findAllByAssignedToIsNotNullAndOrderStatus(OrderStatus orderStatus);
+
+    List<OrderEntity> getOrderEntityByCourierId(Long courierId);
+
+    List<OrderEntity> getAllByCourierId(Long courierId);
 }

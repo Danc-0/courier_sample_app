@@ -51,11 +51,20 @@ public class OrderEntity {
     @Column(name = "dropoff_longitude")
     private Double dropoffLongitude;
 
+    @Column(name = "current_latitude")
+    private Double currentLatitude;
+
+    @Column(name = "current_longitude")
+    private Double currentLongitude;
+
     @Column(name = "pickup_address")
     private String pickupAddress;
 
     @Column(name = "dropoff_address")
     private String dropoffAddress;
+
+    @Column(name = "current_address")
+    private String currentAddress;
 
     @Column(name = "distance_km")
     private String distanceKm;
@@ -94,5 +103,8 @@ public class OrderEntity {
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
+
+    @Column(name = "progress_percent")
+    private float progressPercent;
 }
 

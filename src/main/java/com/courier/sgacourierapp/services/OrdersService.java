@@ -43,6 +43,38 @@ public class OrdersService {
                 .collect(Collectors.toList());
     }
 
+    public List<OrderFormData> getAllAssignedActiveOrders(final Long courierId) {
+        List<OrderEntity> orderEntities = ordersRepository.getAllByCourierId(courierId);
+        List<OrderFormData> ordersFormData = new ArrayList<>();
+        for (OrderEntity orderEntity : orderEntities) {
+            OrderFormData orderFormData = new OrderFormData();
+            UserEntity userEntity = usersRepository.getUserEntityById(orderEntity.getAssignedTo());
+            orderFormData.setDispatcher(userEntity);
+            orderFormData.setOrder(orderEntity);
+            ordersFormData.add(orderFormData);
+        }
+        return ordersFormData;
+    }
+
+
+    public List<OrderFormData> getAllAssignedActiveOrders() {
+        List<OrderEntity> orderEntities = ordersRepository.findAllByAssignedToIsNotNullAndOrderStatus(OrderStatus.ACTIVE)
+                .stream()
+                .sorted(Comparator.comparing(OrderEntity::getCreatedDate).reversed())
+                .toList();
+
+        List<OrderFormData> ordersFormData = new ArrayList<>();
+        for (OrderEntity orderEntity : orderEntities) {
+            OrderFormData orderFormData = new OrderFormData();
+            UserEntity userEntity = usersRepository.getUserEntityById(orderEntity.getAssignedTo());
+            orderFormData.setDispatcher(userEntity);
+            orderFormData.setOrder(orderEntity);
+            ordersFormData.add(orderFormData);
+        }
+
+        return ordersFormData;
+    }
+
     public void addNewOrder(final OrderFormData orderFormData) {
         orderFormData.getOrder().setCreatedDate(LocalDateTime.now());
         orderFormData.getOrder().setOrderCreatedDate(LocalDateTime.now());
@@ -71,13 +103,15 @@ public class OrdersService {
     public void updateOrderByCourierId(final OrderEntity orderEntity, final UserEntity userEntity) {
         try {
             final OrderEntity existingOrder = ordersRepository.findAllByCourierId(orderEntity.getCourierId());
-            UserEntity existingUserEntity;
-            if (existingOrder == null) {
-                throw new EntityNotFoundException("Order with ID " + orderEntity.getCourierId() + " not found.");
+            UserEntity existingUserEntity = new UserEntity();
+            if (existingOrder == null || (existingOrder.getAssignedTo() != null && !existingOrder.getAssignedTo().equals(userEntity.getId()))) {
+                throw new EntityNotFoundException("Order with ID " + orderEntity.getCourierId() + " could not be updated.");
             } else if (userEntity != null) {
                 existingUserEntity = usersRepository.findById(userEntity.getId()).orElseThrow(EntityNotFoundException::new);
                 existingUserEntity.setDispatchStatus(DispatchStatus.ASSIGNED);
                 existingOrder.setAssignedTo(existingUserEntity.getId());
+            } else if (orderEntity.getProgressPercent() == 0.0 && (orderEntity.getOrderStatus().equals(OrderStatus.ACTIVE) && orderEntity.getAssignedTo() != null)) {
+                existingOrder.setProgressPercent(75);
             } else {
                 throw new EntityNotFoundException("Order not assigned yet.");
             }
@@ -97,6 +131,7 @@ public class OrdersService {
                 existingOrder.setOrderType(orderEntity.getOrderType());
                 existingOrder.setOrderCategory(orderEntity.getOrderCategory());
                 existingOrder.setUpdatedDate(LocalDateTime.now());
+                existingOrder.setOrderUpdatedDate(LocalDateTime.now());
 
                 usersRepository.save(existingUserEntity);
                 ordersRepository.save(existingOrder);

@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 "/static/css/styles",
                                 "/internal/login",
                                 "internal/verify",
+                                "/internal/logout",
                                 "/internal/dashboard",
                                 "/internal/orders",
                                 "/internal/getAllOrders",
@@ -44,7 +45,8 @@ public class SecurityConfig {
                                 "internal/payments",
                                 "internal/setting/customers",
                                 "internal/admin/users",
-                                "internal/admin/users/new"
+                                "internal/admin/users/new",
+                                "/internal/order/tracking"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
