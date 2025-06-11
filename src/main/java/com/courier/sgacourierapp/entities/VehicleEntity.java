@@ -25,6 +25,11 @@ public class VehicleEntity {
     private int vehicleYear;
     private String vehicleNumberPlate;
     private String driverName;
+    private double latitude;
+    private double longitude;
+    private String status;
     private Date createdDate;
     private Date updatedDate;
+    private Double currentLatitude;
+    private Double currentLongitude;
 }

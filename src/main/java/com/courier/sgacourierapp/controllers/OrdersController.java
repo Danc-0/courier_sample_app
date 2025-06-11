@@ -3,9 +3,10 @@ package com.courier.sgacourierapp.controllers;
 import com.courier.sgacourierapp.entities.OrderEntity;
 import com.courier.sgacourierapp.entities.OrderFormData;
 import com.courier.sgacourierapp.entities.UserEntity;
+import com.courier.sgacourierapp.entities.VehicleEntity;
 import com.courier.sgacourierapp.services.OrdersService;
+import com.courier.sgacourierapp.services.VehicleService;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,9 @@ public class OrdersController {
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private VehicleService vehicleService;
 
     @GetMapping("orders")
     public String showOrders(final Model model) {
@@ -50,6 +54,8 @@ public class OrdersController {
             OrderEntity order = ordersService.getOrderByCourierId(Long.parseLong(courierId));
             if (order.getAssignedTo() != null) {
                 UserEntity user = ordersService.getUserById(order.getAssignedTo());
+                VehicleEntity vehicle = vehicleService.getVehicleByUserId(user.getId());
+                formData.setVehicle(vehicle);
                 formData.setDispatcher(user);
             }
             formData.setOrder(order);

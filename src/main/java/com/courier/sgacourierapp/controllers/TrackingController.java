@@ -4,6 +4,7 @@ import com.courier.sgacourierapp.entities.OrderEntity;
 import com.courier.sgacourierapp.entities.OrderFormData;
 import com.courier.sgacourierapp.entities.UserEntity;
 import com.courier.sgacourierapp.services.OrdersService;
+import com.courier.sgacourierapp.services.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,9 @@ public class TrackingController {
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private VehicleService vehicleService;
 
     @GetMapping("/order/tracking")
     public String showTracking(

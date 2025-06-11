@@ -53,7 +53,7 @@ public class AuthController {
         if (isVerified) {
             return "redirect:/internal/dashboard";
         } else {
-            return "redirect:/verification?error=true";
+            return "redirect:/internal/verify?error=true";
         }
     }
 

@@ -1,14 +1,12 @@
 package com.courier.sgacourierapp.services;
 
 import com.courier.sgacourierapp.common.CourierEnums;
-import com.courier.sgacourierapp.entities.CustomerEntity;
-import com.courier.sgacourierapp.entities.OrderEntity;
-import com.courier.sgacourierapp.entities.OrderFormData;
-import com.courier.sgacourierapp.entities.UserEntity;
+import com.courier.sgacourierapp.entities.*;
 import com.courier.sgacourierapp.events.OrderCreatedEvent;
 import com.courier.sgacourierapp.repository.CustomersRepository;
 import com.courier.sgacourierapp.repository.OrdersRepository;
 import com.courier.sgacourierapp.repository.UsersRepository;
+import com.courier.sgacourierapp.repository.VehicleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,9 @@ public class OrdersService {
     private UsersRepository usersRepository;
 
     @Autowired
+    private VehicleRepository vehicleRepository;
+
+    @Autowired
     private CustomersRepository customersRepository;
 
     @Autowired
@@ -49,6 +50,8 @@ public class OrdersService {
         for (OrderEntity orderEntity : orderEntities) {
             OrderFormData orderFormData = new OrderFormData();
             UserEntity userEntity = usersRepository.getUserEntityById(orderEntity.getAssignedTo());
+            VehicleEntity vehicle = vehicleRepository.getById(userEntity.getId());
+            orderFormData.setVehicle(vehicle);
             orderFormData.setDispatcher(userEntity);
             orderFormData.setOrder(orderEntity);
             ordersFormData.add(orderFormData);
@@ -67,8 +70,10 @@ public class OrdersService {
         for (OrderEntity orderEntity : orderEntities) {
             OrderFormData orderFormData = new OrderFormData();
             UserEntity userEntity = usersRepository.getUserEntityById(orderEntity.getAssignedTo());
+            VehicleEntity vehicle = vehicleRepository.getById(userEntity.getId());
             orderFormData.setDispatcher(userEntity);
             orderFormData.setOrder(orderEntity);
+            orderFormData.setVehicle(vehicle);
             ordersFormData.add(orderFormData);
         }
 

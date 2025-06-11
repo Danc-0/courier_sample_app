@@ -32,7 +32,7 @@ public class EmailVerificationService {
 
     final static int VERIFICATION_CODE_EXPIRY_TIME = 15;
 
-    @Transactional  // Add this annotation here
+    @Transactional
     public void generateAndStoreVerificationCode(String username) {
         String code = generateRandomCode();
 

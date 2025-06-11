@@ -28,26 +28,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/",
-                                "/static/css/styles",
+                        .requestMatchers(
+                                "/",
+                                "static/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/actuator/**",
                                 "/internal/login",
-                                "internal/verify",
-                                "/internal/logout",
-                                "/internal/dashboard",
+                                "/internal/verify"
+                        ).permitAll()
+                        .requestMatchers("/internal/dashboard",
                                 "/internal/orders",
                                 "/internal/getAllOrders",
                                 "/internal/getOrdersByStatus",
-                                "/internal/getBillingTotalsPerStatus?status=paid",
-                                "/internal/getBillingTotalsPerStatus?status=failed",
-                                "/internal/getBillingTotalsPerStatus?status=pending",
+                                "/internal/getBillingTotalsPerStatus",
                                 "/internal/addNewOrder",
                                 "/internal/billing",
-                                "internal/payments",
-                                "internal/setting/customers",
-                                "internal/admin/users",
-                                "internal/admin/users/new",
+                                "/internal/payments",
+                                "/internal/setting/customers",
+                                "/internal/admin/users",
+                                "/internal/admin/users/new",
                                 "/internal/order/tracking"
-                        ).permitAll()
+                        ).authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -56,10 +58,13 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .permitAll()
                         .successHandler(loginSuccessHandler)
-                        .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/internal/login")
+                        .logoutUrl("/internal/logout")
+                        .logoutSuccessUrl("/internal/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
@@ -85,5 +90,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

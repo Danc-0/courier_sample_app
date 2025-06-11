@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class OrderFormData {
     private OrderEntity order;
     private UserEntity dispatcher;
+    private VehicleEntity vehicle;
 }
