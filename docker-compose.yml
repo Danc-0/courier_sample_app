@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server:2023.11
+    container_name: teamcity-server
+    ports:
+      - "8111:8111"
+    volumes:
+      - teamcity-server-datadir:/data/teamcity_server/datadir
+      - teamcity-server-logs:/opt/teamcity/logs
+    environment:
+      - TEAMCITY_SERVER_MEM_OPTS=-Xmx2g -XX:ReservedCodeCacheSize=640m
+    networks:
+      - teamcity-network
+    restart: unless-stopped
+
+  teamcity-agent:
+    image: jetbrains/teamcity-agent:2023.11
+    container_name: teamcity-agent
+    volumes:
+      - teamcity-agent-conf:/data/teamcity_agent/conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker:ro
+    environment:
+      - SERVER_URL=http://teamcity-server:8111
+      - AGENT_NAME=docker-agent-1
+    depends_on:
+      - teamcity-server
+    networks:
+      - teamcity-network
+    restart: unless-stopped
+
+volumes:
+  teamcity-server-datadir:
+  teamcity-server-logs:
+  teamcity-agent-conf:
+
+networks:
+  teamcity-network:
+    driver: bridge
